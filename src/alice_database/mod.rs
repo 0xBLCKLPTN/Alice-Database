@@ -1,6 +1,7 @@
 use std::error::Error;
 use crate::cache;
 use crate::cache::Cache;
+use crate::alice_fs::*;
 
 #[derive(Debug)]
 pub struct AliceDB<T> {
@@ -25,11 +26,25 @@ pub struct Table {
 type Res = Result<(), Box<dyn Error>>;
 
 impl<T> AliceDB<T> {
-    pub fn create_connection(databases_path: &str, cache: Option<Cache<T>>) -> AliceDB<T> {
+    pub fn create_connection(databases_path: &str, cache: Option<Cache<T>>, database_name: &str) -> Result<AliceDB<T>, Box<dyn Error>> {
         let mut tables: Vec<Table> = Vec::new();
+        create_dir(&databases_path.to_string())?;
+        create_dir(&(databases_path.to_string() + "/" + database_name));
         return match cache {
-            Some(c) => AliceDB { databases_path: databases_path.to_string(), cache: Some(c), tables },
-            _ => AliceDB { databases_path: databases_path.to_string(), cache: None, tables },
+            Some(c) => Ok(
+                AliceDB {
+                    databases_path: databases_path.to_string() + "/" + database_name,
+                    cache: Some(c),
+                    tables
+                }
+            ),
+            _ => Ok(
+                AliceDB {
+                    databases_path: databases_path.to_string() + "/" + database_name,
+                    cache: None,
+                    tables
+                }
+            ),
         }
 
     }
@@ -37,7 +52,10 @@ impl<T> AliceDB<T> {
         let mut first_column = String::new();
         for i in &table.fields {
             first_column += &(i.to_owned() + "\n");
+
         }
+        create_file(&(self.databases_path.clone() + "/" + &table.name)).expect("Error");
+        write_into_file(&(self.databases_path.clone() + "/" + &table.name), first_column);
         self.tables.push(table);
         Ok(())
     }
@@ -47,7 +65,8 @@ impl<T> AliceDB<T> {
 
     }
 
-    pub fn add_data_to_table(&mut self, table_name: &str) -> Res {
+    pub fn add_data_to_table(&mut self, table_name: &str, data: Vec<String>) -> Res {
+
         Ok(())
     }
 
