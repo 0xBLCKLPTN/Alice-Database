@@ -1,0 +1,18 @@
+{
+  "cache_config": {
+    "enable_server": false,
+    "server": {
+      "host": "127.0.0.1",
+      "port": 8080
+    },
+    "capacity": 10
+  },
+  "alice_db_config": {
+    "enable_server": false,
+    "server": {
+      "host": "127.0.0.1",
+      "port": 9090
+    },
+    "path_to_databases": "/"
+  }
+}

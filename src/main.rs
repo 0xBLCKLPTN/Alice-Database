@@ -1,21 +1,20 @@
-mod database_manager;
-mod fs_manager;
 mod cache;
+mod configurator;
+mod alice_database;
 
-use cache::{Cache, Item};
-use database_manager::{DatabaseManager, Database, Field};
-use fs_manager::*;
+use cache::{Cache, setup_cache};
+use configurator::{Root, parse_config_file};
+use alice_database::*;
+
 
 
 fn main() {
-    //create_dir("qwe");
-    //create_file("database_test.alicedb");
-    //println!("{:?}", list_dir("qwe"));
-    //let mut database = Database::new("qwerty");
-    //database.create_table("users", vec![Field::new("username"), Field::new("passwords")]);
-    //println!("{:?}", database);
-    //println!("{:?}", database.get_tables());
-    //println!("{:?}", database.get_fields("users"));
-    //database.set_data("users", "username".to_string(), "super_username".to_string());
-    //database.set_data("users", "password".to_string(), "super_password".to_string());
+    let path = "./config_example.json";
+    //let k = parse_config_file(path);
+    //let cache = setup_cache::<String>("users", k.unwrap().cache.unwrap());
+    let mut db: AliceDB<String> = AliceDB::create_connection("/databases", None);
+    db.create_table(Table {name: "users".to_string(), fields: vec!["usernames".to_string(), "passwords".to_string()]} );
+    db.create_table(Table {name: "passcodes".to_string(), fields: vec!["usernames".to_string(), "passwords".to_string()]} );
+    println!("{:?}", db);
+
 }
