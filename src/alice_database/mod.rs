@@ -65,13 +65,14 @@ impl<T> AliceDB<T> {
 
     }
 
-    pub fn add_data_to_table(&mut self, table_name: &str, data: Vec<String>) -> Res {
-
+    pub fn add_data_to_table(&mut self, table_name: &str, data: &str, field: &str) -> Res {
+        println!("{:?}", into_field(self.databases_path.clone() + "/" + &table_name, field, data));
         Ok(())
     }
 
-    pub fn get_data_from_table(&mut self, table_name: &str) -> Res {
-        Ok(())
+    pub fn get_data_from_table(&mut self, table_name: &str) -> Result<Vec<Vec<String>>, Box<dyn Error>> {
+        Ok(read_file(self.databases_path.clone() + "/" + &table_name).unwrap())
+
     }
     pub fn delete_data_from_table(&mut self, table_name: &str) -> Res {
         Ok(())

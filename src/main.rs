@@ -16,6 +16,9 @@ fn main() {
     let mut db: AliceDB<String> = AliceDB::create_connection("./databases", None, "alice_database_test").unwrap();
     db.create_table(Table {name: "users".to_string(), fields: vec!["usernames".to_string(), "passwords".to_string()]} );
     db.create_table(Table {name: "passcodes".to_string(), fields: vec!["usernames".to_string(), "passwords".to_string()]} );
+    db.add_data_to_table("users", "0xjanus", "usernames");
+    db.add_data_to_table("users", "0xjanusPassword", "passwords");
+    println!("{:?}", db.get_data_from_table("users"));
     println!("{:?}", db);
 
 }

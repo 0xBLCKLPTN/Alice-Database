@@ -43,11 +43,13 @@ pub fn write_into_file(filepath: &str, data: String) {
 
 pub fn into_field(path_to_table: String, field_name: &str, data: &str) -> io::Result<()> {
     let mut file = OpenOptions::new().read(true).write(true).open(&path_to_table)?;
+
     let mut reader = BufReader::new(&file);
     let mut contents = String::new();
     reader.read_to_string(&mut contents)?;
 
     let mut lines: Vec<_> = contents.lines().map(|l| l.to_string()).collect();
+
     for line in &mut lines {
         if line.contains(field_name) {
             let k = format!("{},{}", line.replace("\n", ""), data);
@@ -60,4 +62,24 @@ pub fn into_field(path_to_table: String, field_name: &str, data: &str) -> io::Re
     file.write_all(lines.join("\n").as_bytes())?;
 
     Ok(())
+}
+
+pub fn read_file(path_to_table: String) -> Result<Vec<Vec<String>>, Box<dyn Error>> {
+    let mut file = OpenOptions::new().read(true).write(false).open(&path_to_table)?;
+    let mut reader = BufReader::new(&file);
+    let mut contents = String::new();
+    reader.read_to_string(&mut contents)?;
+    let mut ret_lines: Vec<Vec<String>> = Vec::new();
+    let mut lines: Vec<_> = contents.lines().map(|l| l.to_string()).collect();
+
+    for i in &lines{
+        let mut k = i.split(",").collect::<Vec<&str>>();
+        let mut w = Vec::new();
+        for j in k {
+            w.push(j.to_string())
+        }
+        ret_lines.push(w);
+    }
+    Ok(ret_lines)
+
 }
